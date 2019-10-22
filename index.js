@@ -55,6 +55,7 @@ function coerceInt(value) { return parseInt(value, 10); }
 function evaluate(formula) {
   try {
     const parsedFormula = parse(formula);
+
     const value = getValue(parsedFormula);
 
     if (Number.isNaN(value)) {
@@ -109,7 +110,6 @@ function parsePrefixOperator(rawFormula) {
 function parseValueOrBinaryOperation(rawFormula, value = { operations: [], args: [] }, { isNewArgRequired = false } = {}) {
   // Remove any leading whitespace
   const formula = rawFormula.replace(/^\s*/, '');
-
   if (!formula || formula.length === 0) {
     return constructBinaryOperationTree({
       operations: value.operations,

@@ -134,9 +134,18 @@ describe('Parser#evaluate', function () {
     });
   });
 
+  describe.only('negative numbers, in brackets', () => {
+    it('handles negatives as second operands (addition)', () => {
+      const f = '4-(-1)';
+      const value = Parser.evaluate(f);
+
+      expect(value).to.equal(5);
+    });
+
+  });
+
   describe('edge cases, misc', () => {
     it('handles whitespace between operators', () => {
-
       expect(Parser.evaluate("4 + 1")).to.equal(5);
       expect(Parser.evaluate("4 * ( 1 + 2 )")).to.equal(12);
     });
