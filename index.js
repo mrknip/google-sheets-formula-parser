@@ -1,13 +1,13 @@
 var FUNCTIONS = {
   SUM: function (args) {
     return args
-      .map(coerceInt)
+      .map(coerceFloat)
       .reduce(function(total, a) { return total + a; }, 0);
   },
 
   AVERAGE: function (args) {
     const total = args
-      .map(coerceInt)
+      .map(coerceFloat)
       .reduce(function(total, a) { return total + a; }, 0);
 
     return total / args.length;
@@ -15,34 +15,35 @@ var FUNCTIONS = {
 
   '+': function (args) {
     return args
-      .map(coerceInt)
+      .map(coerceFloat)
       .reduce(function(total, a) { return total + a; }, 0);
   },
 
   '-': function (args) {
     return args
-      .map(coerceInt)
+      .map(coerceFloat)
       .slice(1)
       .reduce(function(total, a) { return total - a; }, args[0]);
   },
 
   '/': function (args) {
     return args
-      .map(coerceInt)
+      .map(coerceFloat)
       .slice(1)
       .reduce(function(total, a) { return total / a; }, args[0]);
   },
 
   '*': function (args) {
     return args
-      .map(coerceInt)
+      .map(coerceFloat)
       .slice(1)
-      .reduce(function(total, a) { return total * a; }, args[0]);
+      .map(v => v * 1000)
+      .reduce(function(total, a) { return total * a; }, args[0]) / 1000;
   },
 
   '^': function (args) {
     return args
-      .map(coerceInt)
+      .map(coerceFloat)
       .slice(1)
       .reduce(function(total, a) { return total ** a; }, args[0]);
   }
@@ -50,7 +51,7 @@ var FUNCTIONS = {
 
 const OPERATORS = ['+', '-', '/', '*', '^'];
 
-function coerceInt(value) { return parseInt(value, 10); }
+function coerceFloat(value) { return parseFloat(value, 10); }
 
 function evaluate(formula) {
   try {
@@ -111,6 +112,7 @@ function parseValueOrBinaryOperation(rawFormula, value = { operations: [], args:
   // Remove any leading whitespace
   const formula = rawFormula.replace(/^\s*/, '');
   if (!formula || formula.length === 0) {
+    // We're finished extracting ops and numbers
     return constructBinaryOperationTree({
       operations: value.operations,
       args: value.args,
@@ -127,6 +129,7 @@ function parseValueOrBinaryOperation(rawFormula, value = { operations: [], args:
     });
   }
 
+  // If first char is an operator, add it
   if (OPERATORS.indexOf(formula[0]) > -1) {
     return parseValueOrBinaryOperation(
       formula.slice(1),
@@ -193,8 +196,6 @@ function extractOp(op, elements) {
 // This constructs a tree from two flat lists of operations and arguments in order to get the order of operations correct
 function constructBinaryOperationTree(elements) {
   const operations = elements.operations;
-
-  // console.log({ operations });
 
   const args =  elements.args;
 

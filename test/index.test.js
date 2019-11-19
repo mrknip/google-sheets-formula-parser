@@ -134,7 +134,7 @@ describe('Parser#evaluate', function () {
     });
   });
 
-  describe.only('negative numbers, in brackets', () => {
+  describe('negative numbers, in brackets', () => {
     it('handles negatives as second operands (addition)', () => {
       const f = '4-(-1)';
       const value = Parser.evaluate(f);
@@ -142,6 +142,43 @@ describe('Parser#evaluate', function () {
       expect(value).to.equal(5);
     });
 
+    it('handles negatives as second operands (addition)', () => {
+      const f = '(-4)+1)';
+      const value = Parser.evaluate(f);
+
+      expect(value).to.equal(-3);
+    });
+
+  });
+
+  describe('decimals', () => {
+    it('adds two decimals', () => {
+      const f = "0.2+0.2";
+      const value = Parser.evaluate(f);
+
+      expect(value).to.equal(0.4);
+    });
+
+    it('adds decimal and integer', () => {
+      const f = "0.2+1";
+      const value = Parser.evaluate(f);
+
+      expect(value).to.equal(1.2);
+    });
+
+    it('multiplies floats', () => {
+      const f = "0.1 * 0.1";
+      const value = Parser.evaluate(f);
+
+      expect(value).to.equal(0.01);
+    });
+
+    it('divides floats', () => {
+      const f = "0.9 / 0.3";
+      const value = Parser.evaluate(f);
+
+      expect(value).to.equal(3);
+    });
   });
 
   describe('edge cases, misc', () => {
